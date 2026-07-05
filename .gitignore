@@ -15,6 +15,7 @@ coverage/
 
 # next.js
 .next/
+.next-container/
 out/
 
 # production
@@ -43,3 +44,7 @@ next-env.d.ts
 
 # markdown
 *.md
+
+# local-only docs and Claude config
+docs/
+.claude/

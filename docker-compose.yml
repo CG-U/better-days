@@ -8,6 +8,10 @@ services:
       - "3000:3000"
     environment:
       NEXT_TELEMETRY_DISABLED: "1"
+      # Next.js rewrites /api/* here (server-side, inside the compose network)
+      API_URL: http://api:4000
+      # keep container build cache separate from host-side `next build` output
+      NEXT_DIST_DIR: .next-container
     volumes:
       - .:/app
       # keep Linux node_modules out of the macOS bind mount
@@ -23,6 +27,7 @@ services:
     environment:
       PORT: 4000
       DATABASE_URL: postgresql://betterdays:betterdays@db:5432/betterdays
+      JWT_SECRET: dev-only-secret-change-me
     volumes:
       - .:/app
       - api_node_modules:/app/node_modules
