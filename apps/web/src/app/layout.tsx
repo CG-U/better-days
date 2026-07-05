@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Atkinson_Hyperlegible_Next, Manrope } from "next/font/google";
 import "./globals.css";
+import { BottomNav } from "@/components/bottom-nav";
 import { Providers } from "./providers";
 
 const manrope = Manrope({
@@ -30,7 +31,10 @@ export default function RootLayout({
       className={`${manrope.variable} ${atkinson.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <BottomNav />
+        </Providers>
       </body>
     </html>
   );

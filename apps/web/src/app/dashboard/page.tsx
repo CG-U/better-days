@@ -76,7 +76,10 @@ export default function DashboardPage() {
           <StatCards stats={dashboard.data.stats} />
 
           <section aria-label="Quick actions" className="flex flex-col gap-3">
-            <Button className="h-12 w-full rounded-full" disabled>
+            <Button
+              render={<Link href="/checkins" />}
+              className="h-12 w-full rounded-full"
+            >
               <NotebookPen aria-hidden className="size-5" />
               Daily Check-in
             </Button>
@@ -89,7 +92,14 @@ export default function DashboardPage() {
               Log an Urge
             </Button>
             <p className="text-center text-xs text-muted-foreground">
-              Daily check-ins are coming in a future update.
+              Had a setback?{" "}
+              <Link
+                href="/relapses/new"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
+                Log it here
+              </Link>{" "}
+              — progress is not erased.
             </p>
           </section>
 

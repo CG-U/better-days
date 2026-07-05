@@ -5,6 +5,9 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './common/prisma/prisma.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { CheckInsModule } from './checkins/checkins.module';
+import { RelapsesModule } from './relapses/relapses.module';
 import { UrgesModule } from './urges/urges.module';
 import { UsersModule } from './users/users.module';
 
@@ -16,6 +19,9 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     DashboardModule,
     UrgesModule,
+    RelapsesModule,
+    CheckInsModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

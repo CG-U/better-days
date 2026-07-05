@@ -28,6 +28,17 @@ export class UrgesService {
     return urges.map((urge) => this.toUrge(urge));
   }
 
+  // Everything the analytics buckets need, oldest first.
+  findAllForStats(
+    userId: string,
+  ): Promise<Array<{ occurredAt: Date; trigger: string }>> {
+    return this.prisma.urge.findMany({
+      where: { userId },
+      orderBy: { occurredAt: 'asc' },
+      select: { occurredAt: true, trigger: true },
+    });
+  }
+
   private toUrge(urge: UrgeModel): Urge {
     return {
       id: urge.id,

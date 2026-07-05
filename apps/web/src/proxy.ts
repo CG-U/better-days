@@ -2,7 +2,13 @@ import { AUTH_COOKIE_NAME } from "@better-days/shared";
 import { NextResponse, type NextRequest } from "next/server";
 
 const AUTH_PAGES = ["/login", "/register"];
-const PROTECTED_PAGES = ["/dashboard", "/urges"];
+const PROTECTED_PAGES = [
+  "/dashboard",
+  "/urges",
+  "/relapses",
+  "/checkins",
+  "/analytics",
+];
 
 export function proxy(request: NextRequest) {
   const isAuthenticated = request.cookies.has(AUTH_COOKIE_NAME);
@@ -30,5 +36,14 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/urges/:path*", "/login", "/register"],
+  matcher: [
+    "/",
+    "/dashboard/:path*",
+    "/urges/:path*",
+    "/relapses/:path*",
+    "/checkins/:path*",
+    "/analytics/:path*",
+    "/login",
+    "/register",
+  ],
 };

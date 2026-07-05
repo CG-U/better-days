@@ -21,9 +21,54 @@ model User {
   // Typical daily gambling spend before recovery, in cents — basis for "money saved"
   dailySpendCents   Int?
 
-  urges Urge[]
+  urges    Urge[]
+  relapses Relapse[]
+  checkIns CheckIn[]
 
   @@map("users")
+}
+
+model CheckIn {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // The user's local calendar day (sent by the client as YYYY-MM-DD) — one
+  // morning and one evening entry per day; re-saving updates in place.
+  date   DateTime @db.Date
+  period String // 'morning' | 'evening' (validated by shared Zod schema)
+
+  // Morning fields
+  mood         Int? // 1-5 (Down … Calm)
+  sleepQuality Int? // 1-10
+  stressLevel  Int? // 1-5
+  intention    String?
+
+  // Evening fields
+  urgesToday Int?
+  reflection String?
+  gratitude  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date, period])
+  @@map("check_ins")
+}
+
+model Relapse {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  amountSpentCents Int
+  trigger          String
+  notes            String?
+  occurredAt       DateTime @default(now())
+  createdAt        DateTime @default(now())
+
+  @@index([userId, occurredAt])
+  @@map("relapses")
 }
 
 model Urge {

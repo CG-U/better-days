@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CreateUrgeSchema,
-  URGE_TRIGGERS,
+  TRIGGERS,
   type CreateUrgeInput,
 } from "@better-days/shared";
 import { CircleCheck, Wind } from "lucide-react";
@@ -102,7 +102,7 @@ export function UrgeForm() {
                 What triggered this?
               </legend>
               <div className="flex flex-wrap gap-2">
-                {URGE_TRIGGERS.map((trigger) => (
+                {TRIGGERS.map((trigger) => (
                   <button
                     key={trigger}
                     type="button"

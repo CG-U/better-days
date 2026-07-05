@@ -1,16 +1,5 @@
 import { z } from 'zod';
-
-// Shared with the relapse tracker (Milestone 5) and analytics (Milestone 7).
-export const URGE_TRIGGERS = [
-  'Stress',
-  'Boredom',
-  'Social',
-  'Environment',
-  'Tiredness',
-  'Hunger',
-] as const;
-
-export type UrgeTrigger = (typeof URGE_TRIGGERS)[number];
+import { TriggerSchema } from './triggers';
 
 export const CreateUrgeSchema = z.object({
   intensity: z
@@ -18,9 +7,7 @@ export const CreateUrgeSchema = z.object({
     .int()
     .min(1, 'Intensity is between 1 and 10')
     .max(10, 'Intensity is between 1 and 10'),
-  trigger: z.enum(URGE_TRIGGERS, {
-    errorMap: () => ({ message: 'Choose what triggered this' }),
-  }),
+  trigger: TriggerSchema,
   notes: z
     .string()
     .max(1000, 'Notes can be up to 1000 characters')

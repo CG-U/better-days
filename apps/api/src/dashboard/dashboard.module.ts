@@ -1,12 +1,20 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
+import { CheckInsModule } from '../checkins/checkins.module';
+import { RelapsesModule } from '../relapses/relapses.module';
 import { UrgesModule } from '../urges/urges.module';
 import { UsersModule } from '../users/users.module';
 import { DashboardController } from './dashboard.controller';
 import { DashboardService } from './dashboard.service';
 
 @Module({
-  imports: [AuthModule, UsersModule, UrgesModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    UrgesModule,
+    RelapsesModule,
+    CheckInsModule,
+  ],
   controllers: [DashboardController],
   providers: [DashboardService],
 })
