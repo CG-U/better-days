@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLogin } from "../hooks/use-auth";
-import { FormError } from "./form-error";
+import { FormError } from "@/components/form-error";
 
 export function LoginForm() {
   const login = useLogin();

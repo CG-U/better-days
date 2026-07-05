@@ -16,5 +16,10 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // Recovery profile (set once during dashboard onboarding, editable later)
+  recoveryStartDate DateTime? @db.Date
+  // Typical daily gambling spend before recovery, in cents — basis for "money saved"
+  dailySpendCents   Int?
+
   @@map("users")
 }

@@ -17,4 +17,11 @@ export class UsersService {
   create(email: string, passwordHash: string): Promise<User> {
     return this.prisma.user.create({ data: { email, passwordHash } });
   }
+
+  updateRecoveryProfile(
+    id: string,
+    data: { recoveryStartDate: Date; dailySpendCents: number },
+  ): Promise<User> {
+    return this.prisma.user.update({ where: { id }, data });
+  }
 }
