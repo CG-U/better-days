@@ -21,5 +21,22 @@ model User {
   // Typical daily gambling spend before recovery, in cents — basis for "money saved"
   dailySpendCents   Int?
 
+  urges Urge[]
+
   @@map("users")
+}
+
+model Urge {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  intensity  Int // 1–10, validated by shared Zod schema
+  trigger    String
+  notes      String?
+  occurredAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  @@index([userId, occurredAt])
+  @@map("urges")
 }

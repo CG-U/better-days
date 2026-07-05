@@ -1,6 +1,7 @@
 "use client";
 
 import { NotebookPen, TriangleAlert } from "lucide-react";
+import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
 import { useLogout, useMe } from "@/features/auth/hooks/use-auth";
@@ -80,15 +81,15 @@ export default function DashboardPage() {
               Daily Check-in
             </Button>
             <Button
+              render={<Link href="/urges/new" />}
               variant="outline"
               className="h-12 w-full rounded-full border-primary text-primary"
-              disabled
             >
               <TriangleAlert aria-hidden className="size-5" />
               Log an Urge
             </Button>
             <p className="text-center text-xs text-muted-foreground">
-              Check-ins and urge logging are coming in the next updates.
+              Daily check-ins are coming in a future update.
             </p>
           </section>
 

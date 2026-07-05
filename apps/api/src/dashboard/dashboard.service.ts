@@ -1,16 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type {
   DashboardResponse,
+  RecentActivityItem,
   RecoveryProfile,
   RecoverySetupInput,
 } from '@better-days/shared';
+import { UrgesService } from '../urges/urges.service';
 import { UsersService } from '../users/users.service';
 
 const MS_PER_DAY = 86_400_000;
+const RECENT_ACTIVITY_LIMIT = 5;
 
 @Injectable()
 export class DashboardService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly urgesService: UrgesService,
+  ) {}
 
   async getDashboard(userId: string): Promise<DashboardResponse> {
     const user = await this.usersService.findById(userId);
@@ -40,9 +46,24 @@ export class DashboardService {
         moneySavedCents: recoveryDays * user.dailySpendCents,
         recoveryDays,
       },
-      // Populated once urges, relapses, and check-ins exist (Milestones 4–6).
-      recentActivity: [],
+      // Relapses and check-ins join this feed in Milestones 5–6.
+      recentActivity: await this.getRecentActivity(userId),
     };
+  }
+
+  private async getRecentActivity(
+    userId: string,
+  ): Promise<RecentActivityItem[]> {
+    const urges = await this.urgesService.findRecent(
+      userId,
+      RECENT_ACTIVITY_LIMIT,
+    );
+    return urges.map((urge) => ({
+      id: urge.id,
+      type: 'urge' as const,
+      label: `Urge managed — intensity ${urge.intensity}/10 (${urge.trigger})`,
+      occurredAt: urge.occurredAt,
+    }));
   }
 
   async saveRecoveryProfile(
