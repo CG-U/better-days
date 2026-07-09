@@ -10,30 +10,32 @@
   --font-sans: var(--font-atkinson);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-heading: var(--font-manrope);
-  /* Serene Recovery container tones (docs/design/serene_recovery/DESIGN.md) */
-  --color-primary-container: #7da67d;
-  --color-on-primary-container: #153b1c;
-  --color-secondary-container: #b8e6fe;
-  --color-on-secondary-container: #3b687d;
-  --color-tertiary: #645e49;
-  --color-tertiary-container: #a39c84;
-  --color-on-tertiary-container: #383421;
-  --color-surface-container-low: #f1f4f2;
-  --color-surface-container: #ebeeed;
-  --color-surface-container-high: #e6e9e7;
+  /* Serene Recovery container tones (docs/design/serene_recovery/DESIGN.md).
+     These are var references, not literals, so `.dark` can reassign them —
+     a hex here would be resolved once and never respond to the theme. */
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
   /* Status tones: DESIGN.md avoids high-alert reds — warm orange carries
      warnings/setbacks, soft purple marks milestones and reflection. */
-  --color-warning: #9a4f21;
-  --color-warning-container: #f7e3d5;
-  --color-on-warning-container: #45210a;
-  --color-milestone: #574a92;
-  --color-milestone-container: #e5e1f5;
-  --color-on-milestone-container: #241a55;
-  /* Level 1 elevation: soft diffused shadow, 15% primary tint, 20px blur. */
-  --shadow-card: 0 2px 20px 0
-    color-mix(in oklch, var(--primary) 15%, transparent);
-  --shadow-card-hover: 0 6px 24px 0
-    color-mix(in oklch, var(--primary) 22%, transparent);
+  --color-warning: var(--warning);
+  --color-warning-container: var(--warning-container);
+  --color-on-warning-container: var(--on-warning-container);
+  --color-milestone: var(--milestone);
+  --color-milestone-container: var(--milestone-container);
+  --color-on-milestone-container: var(--on-milestone-container);
+  /* Level 1 elevation: soft diffused shadow, 20px blur. Light mode tints the
+     shadow with the primary green; dark mode uses plain black, because a
+     tinted shadow on a dark surface reads as a glow. */
+  --shadow-card: 0 2px 20px 0 var(--shadow-color);
+  --shadow-card-hover: 0 6px 24px 0 var(--shadow-color-strong);
   /* Type scale (DESIGN.md § Typography). */
   --text-stat-display: 3rem;
   --text-stat-display--line-height: 1;
@@ -113,40 +115,85 @@
   --sidebar-accent-foreground: #181c1c;
   --sidebar-border: #c2c8be;
   --sidebar-ring: #416743;
+  /* Container tones + elevation, referenced from @theme inline above. */
+  --primary-container: #7da67d;
+  --on-primary-container: #153b1c;
+  --secondary-container: #b8e6fe;
+  --on-secondary-container: #3b687d;
+  --tertiary: #645e49;
+  --tertiary-container: #a39c84;
+  --on-tertiary-container: #383421;
+  --surface-container-low: #f1f4f2;
+  --surface-container: #ebeeed;
+  --surface-container-high: #e6e9e7;
+  --warning: #9a4f21;
+  --warning-container: #f7e3d5;
+  --on-warning-container: #45210a;
+  --milestone: #574a92;
+  --milestone-container: #e5e1f5;
+  --on-milestone-container: #241a55;
+  --shadow-color: color-mix(in oklch, var(--primary) 15%, transparent);
+  --shadow-color-strong: color-mix(in oklch, var(--primary) 22%, transparent);
 }
 
+/*
+ * Dark Serene Recovery. DESIGN.md specifies only the light palette, so this is
+ * derived from it by the usual material rule: surfaces go dark and near-neutral
+ * with a faint green cast, and each accent swaps roles with its container —
+ * the accent lightens to carry text on dark, the container darkens to hold it.
+ * Every pairing here clears WCAG AA (4.5:1) for body text.
+ */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #0f1410;
+  --foreground: #e2e6e0;
+  --card: #171d18;
+  --card-foreground: #e2e6e0;
+  --popover: #1c221d;
+  --popover-foreground: #e2e6e0;
+  --primary: #9dcb9d;
+  --primary-foreground: #0d2913;
+  --secondary: #8fcde4;
+  --secondary-foreground: #0a3346;
+  --muted: #232a24;
+  --muted-foreground: #a7b0a5;
+  --accent: #232a24;
+  --accent-foreground: #e2e6e0;
+  --destructive: #ffb4ab;
+  --border: #3a423b;
+  --input: #3a423b;
+  --ring: #9dcb9d;
+  --chart-1: #9dcb9d;
+  --chart-2: #8fcde4;
+  --chart-3: #cfc7ab;
+  --chart-4: #6f9a70;
+  --chart-5: #b3ab90;
+  --sidebar: #171d18;
+  --sidebar-foreground: #e2e6e0;
+  --sidebar-primary: #9dcb9d;
+  --sidebar-primary-foreground: #0d2913;
+  --sidebar-accent: #232a24;
+  --sidebar-accent-foreground: #e2e6e0;
+  --sidebar-border: #3a423b;
+  --sidebar-ring: #9dcb9d;
+  /* Accent and container trade places relative to light mode. */
+  --primary-container: #2b4a2f;
+  --on-primary-container: #c3e5c2;
+  --secondary-container: #234b5d;
+  --on-secondary-container: #bfe6f8;
+  --tertiary: #cfc7ab;
+  --tertiary-container: #4a4534;
+  --on-tertiary-container: #e6dfc4;
+  --surface-container-low: #151a16;
+  --surface-container: #1a201b;
+  --surface-container-high: #202721;
+  --warning: #ffb787;
+  --warning-container: #4a2611;
+  --on-warning-container: #ffdcc4;
+  --milestone: #c3bcf0;
+  --milestone-container: #35306b;
+  --on-milestone-container: #e2def8;
+  --shadow-color: color-mix(in oklch, #000 60%, transparent);
+  --shadow-color-strong: color-mix(in oklch, #000 70%, transparent);
 }
 
 /* Shared focus treatment for hand-rolled interactive controls (chips, mood
@@ -187,5 +234,35 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+}
+
+/*
+ * Toast motion. Sonner drives enter/exit through a single `--y` custom
+ * property that holds a whole transform, so overriding it re-aims the
+ * animation without touching its stacking or swipe maths.
+ *
+ * On phones (sonner's own <=600px breakpoint) toasts are full-width and
+ * centred, and sonner's default top animation drops them down — leave it.
+ * From 601px up they live in the right corner, so they should arrive from
+ * off-screen right instead of from above. Every selector below is keyed on a
+ * state sonner already sets, and each carries more attributes than the rule it
+ * overrides, so cascade order between the two stylesheets does not matter.
+ */
+@media (min-width: 601px) {
+  /* Enter: start off the right edge (100% of the toast + its 24px offset). */
+  [data-sonner-toast][data-x-position="right"][data-mounted="false"] {
+    --y: translateX(calc(100% + 24px));
+  }
+
+  /* Exit: the front toast leaves the way it came. */
+  [data-sonner-toast][data-x-position="right"][data-removed="true"][data-front="true"][data-swipe-out="false"] {
+    --y: translateX(calc(100% + 24px));
+  }
+
+  /* Exit: a stacked toast keeps its lift offset while it slides out. */
+  [data-sonner-toast][data-x-position="right"][data-removed="true"][data-front="false"][data-swipe-out="false"][data-expanded="true"] {
+    --y: translateY(calc(var(--lift) * var(--offset)))
+      translateX(calc(100% + 24px));
   }
 }

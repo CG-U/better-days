@@ -1,7 +1,9 @@
 "use client";
 
-import { LogOut, UserRound } from "lucide-react";
+import { LogOut, Moon, Sun, UserRound } from "lucide-react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
+import { useSyncExternalStore } from "react";
 import {
   Menu,
   MenuItem,
@@ -13,6 +15,40 @@ import {
 import { UserAvatar } from "@/components/user-avatar";
 import { useLogout, useMe } from "@/features/auth/hooks/use-auth";
 import { cn } from "@/lib/utils";
+
+// Client-only value: the server cannot know the resolved theme, so it renders
+// the neutral state and the client swaps in the real one. Same pattern as the
+// dashboard greeting.
+const emptySubscribe = () => () => {};
+
+/**
+ * Flips between light and dark. The theme is unknown until after hydration
+ * (it may come from the OS), so the item stays disabled and label-less on the
+ * first paint rather than guessing and flickering.
+ */
+function ThemeMenuItem() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+
+  const isDark = resolvedTheme === "dark";
+  const Icon = isDark ? Sun : Moon;
+
+  return (
+    <MenuItem
+      // Keep the menu open so the user can see the theme change land.
+      closeOnClick={false}
+      disabled={!mounted}
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+    >
+      <Icon aria-hidden className="size-4 text-muted-foreground" />
+      {mounted ? (isDark ? "Light mode" : "Dark mode") : "Theme"}
+    </MenuItem>
+  );
+}
 
 /**
  * The avatar in the app nav. Opens an account menu (Profile, Sign out) rather
@@ -57,6 +93,8 @@ export function UserMenu({ className }: { className?: string }) {
           <UserRound aria-hidden className="size-4 text-muted-foreground" />
           Profile
         </MenuLinkItem>
+
+        <ThemeMenuItem />
 
         <MenuSeparator />
 

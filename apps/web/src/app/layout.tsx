@@ -27,8 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // suppressHydrationWarning: next-themes stamps the theme class onto <html>
+    // before paint, so the server markup intentionally differs by one class.
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${manrope.variable} ${atkinson.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
