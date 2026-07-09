@@ -9,6 +9,7 @@ import {
 import { CircleCheck, HeartHandshake } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { FormError } from "@/components/form-error";
+import { SectionCard } from "@/components/section-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,11 +36,11 @@ export function RelapseForm() {
       noValidate
     >
       <div className="flex items-center gap-4 rounded-2xl bg-secondary-container/40 p-5">
-        <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary-container/60 text-secondary">
+        <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary-container/60 text-on-secondary-container">
           <HeartHandshake aria-hidden className="size-6" />
         </span>
         <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-secondary">
+          <p className="label-caps text-on-secondary-container">
             You are still on track
           </p>
           <p className="text-foreground">
@@ -49,13 +50,13 @@ export function RelapseForm() {
         </div>
       </div>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <div className="space-y-3">
           <Label htmlFor="amountSpent" className="text-xl font-semibold">
             How much was spent?
           </Label>
           <div className="relative">
-            <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">
+            <span className="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-muted-foreground">
               $
             </span>
             <Input
@@ -65,16 +66,16 @@ export function RelapseForm() {
               min="0"
               step="0.01"
               placeholder="0.00"
-              className="pl-7"
+              className="pl-8"
               aria-invalid={!!errors.amountSpent}
               {...register("amountSpent", { valueAsNumber: true })}
             />
           </div>
           <FormError message={errors.amountSpent?.message} />
         </div>
-      </section>
+      </SectionCard>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <Controller
           control={control}
           name="trigger"
@@ -91,7 +92,7 @@ export function RelapseForm() {
                     aria-pressed={field.value === trigger}
                     onClick={() => field.onChange(trigger)}
                     className={cn(
-                      "rounded-full border px-5 py-2.5 text-sm transition-colors",
+                      "focus-ring min-h-12 rounded-full border px-5 text-sm transition-colors duration-200 ease-in-out",
                       field.value === trigger
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-border bg-card hover:border-primary/50",
@@ -105,9 +106,9 @@ export function RelapseForm() {
           )}
         />
         <FormError message={errors.trigger?.message} />
-      </section>
+      </SectionCard>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <div className="space-y-3">
           <Label htmlFor="notes" className="text-xl font-semibold">
             What happened?
@@ -120,13 +121,14 @@ export function RelapseForm() {
           />
           <FormError message={errors.notes?.message} />
         </div>
-      </section>
+      </SectionCard>
 
       <FormError message={createRelapse.error?.message} />
 
       <Button
         type="submit"
-        className="h-12 w-full rounded-full"
+        size="lg"
+        className="w-full rounded-full"
         disabled={createRelapse.isPending}
       >
         <CircleCheck aria-hidden className="size-5" />

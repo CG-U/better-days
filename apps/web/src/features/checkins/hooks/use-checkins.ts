@@ -1,10 +1,7 @@
 "use client";
 
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { DASHBOARD_QUERY_KEY } from "@/features/dashboard/hooks/use-dashboard";
 import { checkInsApi } from "../api";
 
@@ -24,9 +21,15 @@ export function useSaveCheckIn() {
 
   return useMutation({
     mutationFn: checkInsApi.save,
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({ queryKey: CHECKINS_QUERY_KEY });
       void queryClient.invalidateQueries({ queryKey: DASHBOARD_QUERY_KEY });
+      toast.success(
+        variables.period === "morning"
+          ? "Morning check-in saved"
+          : "Evening check-in saved",
+        { description: "Thank you for showing up today." },
+      );
     },
   });
 }

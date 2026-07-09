@@ -9,6 +9,7 @@ import {
 import { CircleCheck, Sun } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { FormError } from "@/components/form-error";
+import { SectionCard } from "@/components/section-card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +25,13 @@ const MOODS = [
 ] as const;
 
 const STRESS_WORDS = ["Very low", "Low", "Moderate", "High", "Very high"];
+
+const SLEEP_WORDS = ["Poor", "Restless", "Fair", "Good", "Restorative"];
+
+/** Maps 1–10 sleep quality onto a descriptive word for screen readers. */
+function sleepWord(value: number): string {
+  return SLEEP_WORDS[Math.min(Math.ceil(value / 2), SLEEP_WORDS.length) - 1];
+}
 
 export function MorningForm({
   date,
@@ -56,7 +64,7 @@ export function MorningForm({
       className="flex flex-col gap-5"
       noValidate
     >
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <Controller
           control={control}
           name="mood"
@@ -74,7 +82,7 @@ export function MorningForm({
                     aria-pressed={field.value === mood.value}
                     onClick={() => field.onChange(mood.value)}
                     className={cn(
-                      "flex flex-1 flex-col items-center gap-1 rounded-xl p-2 transition-colors",
+                      "focus-ring flex min-h-12 flex-1 flex-col items-center gap-1 rounded-xl p-2 transition-colors duration-200 ease-in-out",
                       field.value === mood.value
                         ? "bg-primary-container/40"
                         : "hover:bg-muted",
@@ -93,7 +101,7 @@ export function MorningForm({
                       className={cn(
                         "text-xs font-bold",
                         field.value === mood.value
-                          ? "text-primary"
+                          ? "text-on-primary-container"
                           : "text-muted-foreground",
                       )}
                     >
@@ -106,9 +114,9 @@ export function MorningForm({
           )}
         />
         <FormError message={errors.mood?.message} />
-      </section>
+      </SectionCard>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <Controller
           control={control}
           name="sleepQuality"
@@ -128,11 +136,12 @@ export function MorningForm({
                 min={1}
                 max={10}
                 step={1}
-                className="w-full accent-primary"
+                aria-valuetext={`${field.value} out of 10 — ${sleepWord(field.value)}`}
+                className="focus-ring h-6 w-full accent-primary"
                 value={field.value}
                 onChange={(event) => field.onChange(Number(event.target.value))}
               />
-              <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <div className="label-caps flex justify-between text-muted-foreground">
                 <span>Poor</span>
                 <span>Restorative</span>
               </div>
@@ -140,9 +149,9 @@ export function MorningForm({
           )}
         />
         <FormError message={errors.sleepQuality?.message} />
-      </section>
+      </SectionCard>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <Controller
           control={control}
           name="stressLevel"
@@ -151,7 +160,7 @@ export function MorningForm({
               <legend className="flex w-full items-center justify-between text-xl font-semibold">
                 Stress level
                 {field.value ? (
-                  <span className="rounded-full bg-destructive/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-destructive">
+                  <span className="label-caps rounded-full bg-warning-container px-3 py-1 text-on-warning-container">
                     {STRESS_WORDS[field.value - 1]}
                   </span>
                 ) : null}
@@ -164,9 +173,9 @@ export function MorningForm({
                     aria-pressed={field.value === level}
                     onClick={() => field.onChange(level)}
                     className={cn(
-                      "flex-1 rounded-xl border py-3 font-semibold transition-colors",
+                      "focus-ring min-h-12 flex-1 rounded-xl border font-semibold transition-colors duration-200 ease-in-out",
                       field.value === level
-                        ? "border-primary bg-primary-container/40 text-primary"
+                        ? "border-primary bg-primary-container/40 text-on-primary-container"
                         : "border-transparent bg-muted hover:border-primary/40",
                     )}
                   >
@@ -178,9 +187,9 @@ export function MorningForm({
           )}
         />
         <FormError message={errors.stressLevel?.message} />
-      </section>
+      </SectionCard>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <div className="space-y-3">
           <Label htmlFor="intention" className="text-xl font-semibold">
             Daily intention
@@ -193,13 +202,14 @@ export function MorningForm({
           />
           <FormError message={errors.intention?.message} />
         </div>
-      </section>
+      </SectionCard>
 
       <FormError message={saveCheckIn.error?.message} />
 
       <Button
         type="submit"
-        className="h-12 w-full rounded-full"
+        size="lg"
+        className="w-full rounded-full"
         disabled={saveCheckIn.isPending}
       >
         <CircleCheck aria-hidden className="size-5" />

@@ -3,8 +3,12 @@
 import { NotebookPen, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
+import { QueryError } from "@/components/query-error";
 import { Button } from "@/components/ui/button";
-import { useLogout, useMe } from "@/features/auth/hooks/use-auth";
+import { Skeleton } from "@/components/ui/skeleton";
+import { UserMenu } from "@/components/user-menu";
+import { useMe } from "@/features/auth/hooks/use-auth";
+import { CheckInPrompt } from "@/features/checkins/components/checkin-prompt";
 import { RecentActivity } from "@/features/dashboard/components/recent-activity";
 import { RecoverySetupForm } from "@/features/dashboard/components/recovery-setup-form";
 import { StatCards } from "@/features/dashboard/components/stat-cards";
@@ -29,28 +33,41 @@ function useGreeting(): string {
   );
 }
 
+function DashboardSkeleton() {
+  return (
+    <div className="flex flex-col gap-6" aria-hidden>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Skeleton className="h-72 rounded-2xl sm:row-span-3" />
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+      </div>
+      <div className="flex flex-col gap-3 md:flex-row">
+        <Skeleton className="h-12 flex-1 rounded-full" />
+        <Skeleton className="h-12 flex-1 rounded-full" />
+      </div>
+      <Skeleton className="h-48 rounded-2xl" />
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const me = useMe();
   const dashboard = useDashboard();
-  const logout = useLogout();
   const greeting = useGreeting();
 
-  const displayName = me.data?.user.email.split("@")[0];
+  // Prefer the chosen username; fall back to the email local-part.
+  const displayName =
+    me.data?.user.username ?? me.data?.user.email.split("@")[0];
 
   return (
     <main className="mx-auto flex w-full max-w-[1040px] flex-col gap-6 p-5 md:p-10">
-      <header className="flex items-center justify-between">
+      {/* From md up the brand and account menu live in the sticky top nav. */}
+      <header className="flex items-center justify-between gap-3 md:hidden">
         <h1 className="text-2xl font-bold tracking-tight text-primary">
           Better Days
         </h1>
-        <Button
-          variant="outline"
-          className="rounded-full"
-          onClick={() => logout.mutate()}
-          disabled={logout.isPending}
-        >
-          {logout.isPending ? "Signing out..." : "Sign out"}
-        </Button>
+        <UserMenu />
       </header>
 
       <section className="space-y-1">
@@ -64,33 +81,43 @@ export default function DashboardPage() {
       </section>
 
       {dashboard.isPending ? (
-        <p className="text-muted-foreground">Loading your progress...</p>
+        <DashboardSkeleton />
       ) : dashboard.isError ? (
-        <p className="text-muted-foreground">
-          We could not load your dashboard. Please refresh to try again.
-        </p>
+        <QueryError
+          message="We could not load your dashboard."
+          onRetry={() => void dashboard.refetch()}
+          isRetrying={dashboard.isFetching}
+        />
       ) : !dashboard.data.setupComplete || !dashboard.data.stats ? (
         <RecoverySetupForm />
       ) : (
         <>
+          <CheckInPrompt />
+
           <StatCards stats={dashboard.data.stats} />
 
           <section aria-label="Quick actions" className="flex flex-col gap-3">
-            <Button
-              render={<Link href="/checkins" />}
-              className="h-12 w-full rounded-full"
-            >
-              <NotebookPen aria-hidden className="size-5" />
-              Daily Check-in
-            </Button>
-            <Button
-              render={<Link href="/urges/new" />}
-              variant="outline"
-              className="h-12 w-full rounded-full border-primary text-primary"
-            >
-              <TriangleAlert aria-hidden className="size-5" />
-              Log an Urge
-            </Button>
+            <div className="flex flex-col gap-3 md:flex-row">
+              <Button
+                render={<Link href="/checkins" />}
+                nativeButton={false}
+                size="lg"
+                className="w-full rounded-full md:flex-1"
+              >
+                <NotebookPen aria-hidden className="size-5" />
+                Daily Check-in
+              </Button>
+              <Button
+                render={<Link href="/urges/new" />}
+                nativeButton={false}
+                variant="outline"
+                size="lg"
+                className="w-full rounded-full border-primary text-primary md:flex-1"
+              >
+                <TriangleAlert aria-hidden className="size-5" />
+                Log an Urge
+              </Button>
+            </div>
             <p className="text-center text-xs text-muted-foreground">
               Had a setback?{" "}
               <Link

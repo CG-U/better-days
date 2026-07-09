@@ -16,6 +16,12 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // Display profile. Null until the user sets one in /settings; the UI falls
+  // back to the email local-part. avatarColor is a key from AVATAR_COLORS in
+  // packages/shared — the avatar is the first letter, never an upload.
+  username    String? @unique
+  avatarColor String?
+
   // Recovery profile (set once during dashboard onboarding, editable later)
   recoveryStartDate DateTime? @db.Date
   // Typical daily gambling spend before recovery, in cents — basis for "money saved"

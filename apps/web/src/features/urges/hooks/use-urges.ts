@@ -1,11 +1,8 @@
 "use client";
 
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { DASHBOARD_QUERY_KEY } from "@/features/dashboard/hooks/use-dashboard";
 import { urgesApi } from "../api";
 
@@ -28,6 +25,9 @@ export function useCreateUrge() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: URGES_QUERY_KEY });
       void queryClient.invalidateQueries({ queryKey: DASHBOARD_QUERY_KEY });
+      toast.success("Urge logged", {
+        description: "Noticing it is a strong first response.",
+      });
       router.push("/urges");
     },
   });

@@ -1,5 +1,7 @@
 import type { DashboardStats } from "@better-days/shared";
-import { CalendarDays, PiggyBank, Zap } from "lucide-react";
+import { CalendarDays, PiggyBank, Trophy } from "lucide-react";
+import { SectionCard } from "@/components/section-card";
+import { StreakRing } from "./streak-ring";
 
 function formatMoney(cents: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -9,10 +11,36 @@ function formatMoney(cents: number): string {
 }
 
 function StatLabel({ children }: { children: React.ReactNode }) {
+  return <p className="label-caps text-muted-foreground">{children}</p>;
+}
+
+function StatTile({
+  label,
+  value,
+  icon,
+  valueClassName,
+  iconClassName,
+}: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+  valueClassName: string;
+  iconClassName: string;
+}) {
   return (
-    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-      {children}
-    </p>
+    <SectionCard className="flex items-center justify-between">
+      <div className="space-y-2">
+        <StatLabel>{label}</StatLabel>
+        <p className={`font-heading text-3xl font-bold ${valueClassName}`}>
+          {value}
+        </p>
+      </div>
+      <span
+        className={`flex size-12 items-center justify-center rounded-full ${iconClassName}`}
+      >
+        {icon}
+      </span>
+    </SectionCard>
   );
 }
 
@@ -22,49 +50,34 @@ export function StatCards({ stats }: { stats: DashboardStats }) {
       aria-label="Recovery progress"
       className="grid grid-cols-1 gap-4 sm:grid-cols-2"
     >
-      <div className="relative flex flex-col justify-between gap-6 overflow-hidden rounded-2xl border border-border bg-primary-container/25 p-6 sm:row-span-2">
-        <Zap
-          aria-hidden
-          className="absolute -right-4 bottom-2 size-32 text-primary/10"
-        />
+      <SectionCard className="flex flex-col items-center justify-center gap-4 border-transparent bg-primary-container/25 sm:row-span-3">
         <StatLabel>Current momentum</StatLabel>
-        <p className="font-heading">
-          <span className="text-5xl font-extrabold text-primary">
-            {stats.currentStreakDays}
-          </span>{" "}
-          <span className="text-2xl font-semibold text-foreground">
-            {stats.currentStreakDays === 1 ? "Day" : "Days"} Strong
-          </span>
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Longest streak: {stats.longestStreakDays}{" "}
-          {stats.longestStreakDays === 1 ? "day" : "days"}
-        </p>
-      </div>
+        <StreakRing days={stats.currentStreakDays} />
+      </SectionCard>
 
-      <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-6">
-        <div className="space-y-2">
-          <StatLabel>Money saved</StatLabel>
-          <p className="font-heading text-3xl font-bold text-secondary">
-            {formatMoney(stats.moneySavedCents)}
-          </p>
-        </div>
-        <span className="flex size-12 items-center justify-center rounded-full bg-secondary-container text-on-secondary-container">
-          <PiggyBank aria-hidden className="size-6" />
-        </span>
-      </div>
+      <StatTile
+        label="Money saved"
+        value={formatMoney(stats.moneySavedCents)}
+        valueClassName="text-secondary"
+        icon={<PiggyBank aria-hidden className="size-6" />}
+        iconClassName="bg-milestone-container text-on-milestone-container"
+      />
 
-      <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-6">
-        <div className="space-y-2">
-          <StatLabel>Total days</StatLabel>
-          <p className="font-heading text-3xl font-bold text-foreground">
-            {stats.recoveryDays}
-          </p>
-        </div>
-        <span className="flex size-12 items-center justify-center rounded-full bg-primary-container/40 text-primary">
-          <CalendarDays aria-hidden className="size-6" />
-        </span>
-      </div>
+      <StatTile
+        label="Longest streak"
+        value={`${stats.longestStreakDays} ${stats.longestStreakDays === 1 ? "day" : "days"}`}
+        valueClassName="text-primary"
+        icon={<Trophy aria-hidden className="size-6" />}
+        iconClassName="bg-primary-container/40 text-on-primary-container"
+      />
+
+      <StatTile
+        label="Total days"
+        value={String(stats.recoveryDays)}
+        valueClassName="text-foreground"
+        icon={<CalendarDays aria-hidden className="size-6" />}
+        iconClassName="bg-secondary-container text-on-secondary-container"
+      />
     </section>
   );
 }

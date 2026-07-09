@@ -9,6 +9,7 @@ import {
 import { CircleCheck, Wind } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { FormError } from "@/components/form-error";
+import { SectionCard } from "@/components/section-card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,20 +41,18 @@ export function UrgeForm() {
       noValidate
     >
       <div className="flex items-center gap-4 rounded-2xl bg-primary-container/30 p-5">
-        <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-container/50 text-primary">
+        <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-container/50 text-on-primary-container">
           <Wind aria-hidden className="size-6" />
         </span>
         <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-primary">
-            Supportive tip
-          </p>
+          <p className="label-caps text-on-primary-container">Supportive tip</p>
           <p className="text-foreground">
             Take a deep breath. This moment will pass.
           </p>
         </div>
       </div>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <Controller
           control={control}
           name="intensity"
@@ -65,7 +64,6 @@ export function UrgeForm() {
                 </Label>
                 <p className="font-heading text-4xl font-extrabold text-primary">
                   {field.value}
-                  <span className="sr-only"> out of 10 — </span>
                   <span className="ml-2 text-sm font-semibold text-muted-foreground">
                     {intensityWord(field.value)}
                   </span>
@@ -77,11 +75,12 @@ export function UrgeForm() {
                 min={1}
                 max={10}
                 step={1}
-                className="w-full accent-primary"
+                aria-valuetext={`${field.value} out of 10 — ${intensityWord(field.value)}`}
+                className="focus-ring h-6 w-full accent-primary"
                 value={field.value}
                 onChange={(event) => field.onChange(Number(event.target.value))}
               />
-              <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <div className="label-caps flex justify-between text-muted-foreground">
                 <span>Mild</span>
                 <span>Moderate</span>
                 <span>Severe</span>
@@ -90,9 +89,9 @@ export function UrgeForm() {
           )}
         />
         <FormError message={errors.intensity?.message} />
-      </section>
+      </SectionCard>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <Controller
           control={control}
           name="trigger"
@@ -109,7 +108,7 @@ export function UrgeForm() {
                     aria-pressed={field.value === trigger}
                     onClick={() => field.onChange(trigger)}
                     className={cn(
-                      "rounded-full border px-5 py-2.5 text-sm transition-colors",
+                      "focus-ring min-h-12 rounded-full border px-5 text-sm transition-colors duration-200 ease-in-out",
                       field.value === trigger
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-border bg-card hover:border-primary/50",
@@ -123,9 +122,9 @@ export function UrgeForm() {
           )}
         />
         <FormError message={errors.trigger?.message} />
-      </section>
+      </SectionCard>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <div className="space-y-3">
           <Label htmlFor="notes" className="text-xl font-semibold">
             Additional notes
@@ -138,13 +137,14 @@ export function UrgeForm() {
           />
           <FormError message={errors.notes?.message} />
         </div>
-      </section>
+      </SectionCard>
 
       <FormError message={createUrge.error?.message} />
 
       <Button
         type="submit"
-        className="h-12 w-full rounded-full"
+        size="lg"
+        className="w-full rounded-full"
         disabled={createUrge.isPending}
       >
         <CircleCheck aria-hidden className="size-5" />

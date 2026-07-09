@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Atkinson_Hyperlegible_Next, Manrope } from "next/font/google";
 import "./globals.css";
-import { BottomNav } from "@/components/bottom-nav";
+import { AppNav, AppNavSpacer } from "@/components/app-nav";
+import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "./providers";
 
 const manrope = Manrope({
@@ -32,8 +33,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Providers>
+          <AppNav />
           {children}
-          <BottomNav />
+          <AppNavSpacer />
+          <Toaster />
         </Providers>
       </body>
     </html>

@@ -1,4 +1,5 @@
 export * from './constants';
+export * from './schemas/settings';
 export * from './schemas/auth';
 export * from './schemas/dashboard';
 export * from './schemas/triggers';

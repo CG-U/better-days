@@ -8,6 +8,7 @@ const PROTECTED_PAGES = [
   "/relapses",
   "/checkins",
   "/analytics",
+  "/settings",
 ];
 
 export function proxy(request: NextRequest) {
@@ -20,9 +21,7 @@ export function proxy(request: NextRequest) {
     );
   }
 
-  const isProtected = PROTECTED_PAGES.some((page) =>
-    pathname.startsWith(page),
-  );
+  const isProtected = PROTECTED_PAGES.some((page) => pathname.startsWith(page));
   if (isProtected && !isAuthenticated) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -43,6 +42,7 @@ export const config = {
     "/relapses/:path*",
     "/checkins/:path*",
     "/analytics/:path*",
+    "/settings/:path*",
     "/login",
     "/register",
   ],

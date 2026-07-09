@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { AVATAR_COLORS } from './settings';
 
 export const RegisterSchema = z.object({
   email: z.string().email(),
@@ -13,6 +14,9 @@ export const LoginSchema = z.object({
 export const AuthUserSchema = z.object({
   id: z.string().uuid(),
   email: z.string().email(),
+  // Null until the user sets a display profile in /settings.
+  username: z.string().nullable(),
+  avatarColor: z.enum(AVATAR_COLORS).nullable(),
   createdAt: z.string().datetime(),
 });
 

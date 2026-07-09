@@ -1,6 +1,8 @@
 "use client";
 
 import { HeartHandshake } from "lucide-react";
+import { QueryError } from "@/components/query-error";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useUrges } from "../hooks/use-urges";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -14,21 +16,29 @@ export function UrgeList() {
   const urges = useUrges();
 
   if (urges.isPending) {
-    return <p className="text-muted-foreground">Loading your entries...</p>;
+    return (
+      <div className="space-y-3" aria-hidden>
+        {[0, 1, 2].map((i) => (
+          <Skeleton key={i} className="h-24 rounded-2xl" />
+        ))}
+      </div>
+    );
   }
 
   if (urges.isError) {
     return (
-      <p className="text-muted-foreground">
-        We could not load your entries. Please refresh to try again.
-      </p>
+      <QueryError
+        message="We could not load your entries."
+        onRetry={() => void urges.refetch()}
+        isRetrying={urges.isFetching}
+      />
     );
   }
 
   if (urges.data.urges.length === 0) {
     return (
       <div className="flex items-center gap-4 rounded-2xl bg-muted/60 p-6">
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-container/40 text-primary">
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-container/40 text-on-primary-container">
           <HeartHandshake aria-hidden className="size-5" />
         </span>
         <p className="text-sm text-muted-foreground">
@@ -44,7 +54,7 @@ export function UrgeList() {
       {urges.data.urges.map((urge) => (
         <li
           key={urge.id}
-          className="rounded-2xl border border-border bg-card p-5"
+          className="rounded-2xl border border-border/60 bg-card p-5 shadow-card"
         >
           <div className="flex items-center justify-between gap-4">
             <p className="font-semibold">

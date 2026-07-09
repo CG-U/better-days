@@ -9,6 +9,7 @@ import {
 import { CircleCheck, Moon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { FormError } from "@/components/form-error";
+import { SectionCard } from "@/components/section-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,7 +45,7 @@ export function EveningForm({
       className="flex flex-col gap-5"
       noValidate
     >
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <div className="space-y-3">
           <Label
             htmlFor="urgesToday"
@@ -69,9 +70,9 @@ export function EveningForm({
           />
           <FormError message={errors.urgesToday?.message} />
         </div>
-      </section>
+      </SectionCard>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <div className="space-y-3">
           <Label htmlFor="reflection" className="text-xl font-semibold">
             Reflection
@@ -84,9 +85,9 @@ export function EveningForm({
           />
           <FormError message={errors.reflection?.message} />
         </div>
-      </section>
+      </SectionCard>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <SectionCard>
         <div className="space-y-3">
           <Label htmlFor="gratitude" className="text-xl font-semibold">
             Gratitude
@@ -99,13 +100,14 @@ export function EveningForm({
           />
           <FormError message={errors.gratitude?.message} />
         </div>
-      </section>
+      </SectionCard>
 
       <FormError message={saveCheckIn.error?.message} />
 
       <Button
         type="submit"
-        className="h-12 w-full rounded-full"
+        size="lg"
+        className="w-full rounded-full"
         disabled={saveCheckIn.isPending}
       >
         <CircleCheck aria-hidden className="size-5" />

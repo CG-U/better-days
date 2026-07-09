@@ -18,10 +18,25 @@ export class UsersService {
     return this.prisma.user.create({ data: { email, passwordHash } });
   }
 
+  findByUsername(username: string): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { username } });
+  }
+
   updateRecoveryProfile(
     id: string,
     data: { recoveryStartDate: Date; dailySpendCents: number },
   ): Promise<User> {
     return this.prisma.user.update({ where: { id }, data });
+  }
+
+  updateDisplayProfile(
+    id: string,
+    data: { username: string; avatarColor: string },
+  ): Promise<User> {
+    return this.prisma.user.update({ where: { id }, data });
+  }
+
+  updatePasswordHash(id: string, passwordHash: string): Promise<User> {
+    return this.prisma.user.update({ where: { id }, data: { passwordHash } });
   }
 }
