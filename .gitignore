@@ -48,3 +48,6 @@ next-env.d.ts
 # local-only docs and Claude config
 docs/
 .claude/
+
+# editor
+.vscode/
