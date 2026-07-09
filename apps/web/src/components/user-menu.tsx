@@ -1,9 +1,10 @@
 "use client";
 
-import { LogOut, Moon, Sun, UserRound } from "lucide-react";
+import { LogOut, Moon, Phone, Sun, UserRound, Wrench } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
+import { HELPLINE } from "@/components/crisis-panel";
 import {
   Menu,
   MenuItem,
@@ -94,7 +95,26 @@ export function UserMenu({ className }: { className?: string }) {
           Profile
         </MenuLinkItem>
 
+        <MenuLinkItem render={<Link href="/toolkit" />}>
+          <Wrench aria-hidden className="size-4 text-muted-foreground" />
+          Coping toolkit
+        </MenuLinkItem>
+
         <ThemeMenuItem />
+
+        <MenuSeparator />
+
+        {/* Always reachable, never shouted about: a permanent "get help" tab
+            would make the app feel like an emergency room on every visit. */}
+        <MenuLinkItem href={HELPLINE.tel}>
+          <Phone aria-hidden className="size-4 text-muted-foreground" />
+          <span className="flex flex-col items-start">
+            Get help now
+            <span className="text-xs text-muted-foreground">
+              {HELPLINE.display}
+            </span>
+          </span>
+        </MenuLinkItem>
 
         <MenuSeparator />
 

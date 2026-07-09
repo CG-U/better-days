@@ -19,6 +19,57 @@ export interface StreakResult {
   longestStreakDays: number;
 }
 
+/** An unbroken stretch of clean days, both ends inclusive. */
+export interface CleanRun {
+  startDay: number;
+  endDay: number;
+  /** Always >= 1; empty gaps are never returned. */
+  length: number;
+}
+
+/**
+ * Every unbroken clean stretch between the recovery start and today, oldest
+ * first.
+ *
+ * A relapse day is not a clean day, so it splits the timeline: the run before
+ * it ends the day prior, the next opens the day after. Back-to-back relapses
+ * simply yield no run between them, and a start date in the future yields none
+ * at all.
+ *
+ * This is the single source of the day arithmetic — `computeStreaks` and the
+ * milestone ladder both read it, so streak semantics can only change here.
+ */
+export function computeCleanRuns(
+  startDay: number,
+  today: number,
+  relapseDayNumbers: number[],
+): CleanRun[] {
+  if (today < startDay) return [];
+
+  // Unique relapse days within the recovery window, oldest first.
+  const relapseDays = [
+    ...new Set(
+      relapseDayNumbers.filter((day) => day >= startDay && day <= today),
+    ),
+  ].sort((a, b) => a - b);
+
+  const runs: CleanRun[] = [];
+  const push = (from: number, to: number) => {
+    if (to >= from) {
+      runs.push({ startDay: from, endDay: to, length: to - from + 1 });
+    }
+  };
+
+  let openedAt = startDay;
+  for (const relapseDay of relapseDays) {
+    push(openedAt, relapseDay - 1);
+    openedAt = relapseDay + 1;
+  }
+  push(openedAt, today);
+
+  return runs;
+}
+
 /**
  * Streak semantics:
  * - The recovery start day counts as day 1, so with no relapses the current
@@ -34,28 +85,15 @@ export function computeStreaks(
   today: number,
   relapseDayNumbers: number[],
 ): StreakResult {
-  // Unique relapse days within the recovery window, oldest first.
-  const relapseDays = [
-    ...new Set(
-      relapseDayNumbers.filter((day) => day >= startDay && day <= today),
-    ),
-  ].sort((a, b) => a - b);
+  const runs = computeCleanRuns(startDay, today, relapseDayNumbers);
 
-  if (relapseDays.length === 0) {
-    const streak = Math.max(0, today - startDay) + 1;
-    return { currentStreakDays: streak, longestStreakDays: streak };
-  }
-
-  const currentStreakDays = today - relapseDays[relapseDays.length - 1];
-
-  const segments = [relapseDays[0] - startDay];
-  for (let i = 1; i < relapseDays.length; i++) {
-    segments.push(relapseDays[i] - relapseDays[i - 1] - 1);
-  }
-  segments.push(currentStreakDays);
+  // The current streak is live only if the newest run reaches today — a relapse
+  // today closes every run before it.
+  const newest = runs.at(-1);
+  const currentStreakDays = newest?.endDay === today ? newest.length : 0;
 
   return {
     currentStreakDays,
-    longestStreakDays: Math.max(0, ...segments),
+    longestStreakDays: Math.max(0, ...runs.map((run) => run.length)),
   };
 }

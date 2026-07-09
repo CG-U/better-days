@@ -1,4 +1,5 @@
 import { BackLink } from "@/components/back-link";
+import { CrisisPanel } from "@/components/crisis-panel";
 import { RelapseForm } from "@/features/relapses/components/relapse-form";
 
 export const metadata = { title: "Log a Setback — Better Days" };
@@ -14,6 +15,7 @@ export default function NewRelapsePage() {
         <span aria-hidden className="size-12" />
       </header>
       <RelapseForm />
+      <CrisisPanel />
     </main>
   );
 }

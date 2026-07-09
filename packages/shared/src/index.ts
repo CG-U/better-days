@@ -7,3 +7,5 @@ export * from './schemas/urges';
 export * from './schemas/relapses';
 export * from './schemas/checkins';
 export * from './schemas/analytics';
+export * from './schemas/coping';
+export * from './schemas/milestones';

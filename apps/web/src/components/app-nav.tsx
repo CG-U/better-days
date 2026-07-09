@@ -20,8 +20,9 @@ const TABS = [
   { href: "/relapses", label: "Setbacks", icon: HeartHandshake },
 ] as const;
 
-// /settings has no tab of its own but is still an app page, so the nav shows.
-const NAV_PAGES = [...TABS.map((tab) => tab.href), "/settings"];
+// Reached from the account menu rather than a tab, but still app pages — the
+// nav stays visible so they are not dead ends.
+const NAV_PAGES = [...TABS.map((tab) => tab.href), "/settings", "/toolkit"];
 
 /** The nav only shows on app pages, never on auth or dev pages. */
 function useNavVisible(): boolean {

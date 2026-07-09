@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { MilestonesSummary } from './milestones';
 
 const DATE_ONLY_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -47,5 +48,7 @@ export interface DashboardResponse {
   setupComplete: boolean;
   profile: RecoveryProfile | null;
   stats: DashboardStats | null;
+  /** Null until the recovery profile is set, like `stats`. */
+  milestones: MilestonesSummary | null;
   recentActivity: RecentActivityItem[];
 }

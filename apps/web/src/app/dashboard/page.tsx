@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { UserMenu } from "@/components/user-menu";
 import { useMe } from "@/features/auth/hooks/use-auth";
 import { CheckInPrompt } from "@/features/checkins/components/checkin-prompt";
+import { MilestoneBand } from "@/features/dashboard/components/milestone-band";
 import { RecentActivity } from "@/features/dashboard/components/recent-activity";
 import { RecoverySetupForm } from "@/features/dashboard/components/recovery-setup-form";
 import { StatCards } from "@/features/dashboard/components/stat-cards";
@@ -129,6 +130,12 @@ export default function DashboardPage() {
               — progress is not erased.
             </p>
           </section>
+
+          {/* Below the quick actions: celebrating progress must not push the
+              things someone came here to *do* off the first screen. */}
+          {dashboard.data.milestones ? (
+            <MilestoneBand summary={dashboard.data.milestones} />
+          ) : null}
 
           <RecentActivity items={dashboard.data.recentActivity} />
 

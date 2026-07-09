@@ -27,11 +27,33 @@ model User {
   // Typical daily gambling spend before recovery, in cents — basis for "money saved"
   dailySpendCents   Int?
 
-  urges    Urge[]
-  relapses Relapse[]
-  checkIns CheckIn[]
+  urges             Urge[]
+  relapses          Relapse[]
+  checkIns          CheckIn[]
+  copingStrategies  CopingStrategy[]
 
   @@map("users")
+}
+
+/// Something the user knows helps them through a craving, in their own words.
+/// Surfaced on the ride-it-out screen; managed from /settings.
+model CopingStrategy {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  label String
+  // Times the user tapped "this helped". Sorts the list, so the thing that
+  // actually works drifts to the top without them having to curate it.
+  helpedCount Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // One entry per phrase — re-adding "call my brother" should not duplicate it.
+  @@unique([userId, label])
+  @@index([userId])
+  @@map("coping_strategies")
 }
 
 model CheckIn {
@@ -85,8 +107,12 @@ model Urge {
   intensity  Int // 1–10, validated by shared Zod schema
   trigger    String
   notes      String?
-  occurredAt DateTime @default(now())
-  createdAt  DateTime @default(now())
+  // 'unresolved' | 'passed' | 'gambled' (URGE_OUTCOMES in packages/shared).
+  // Existing rows backfill to 'unresolved': we cannot know how they ended.
+  outcome    String    @default("unresolved")
+  resolvedAt DateTime? // when the user told us how it ended
+  occurredAt DateTime  @default(now())
+  createdAt  DateTime  @default(now())
 
   @@index([userId, occurredAt])
   @@map("urges")

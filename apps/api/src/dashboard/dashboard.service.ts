@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import type {
   DashboardResponse,
   DashboardStats,
+  MilestonesSummary,
   RecentActivityItem,
   RecoveryProfile,
   RecoverySetupInput,
@@ -10,6 +11,7 @@ import { CheckInsService } from '../checkins/checkins.service';
 import { RelapsesService } from '../relapses/relapses.service';
 import { UrgesService } from '../urges/urges.service';
 import { UsersService } from '../users/users.service';
+import { computeMilestones } from './milestones';
 import { computeStreaks, toUtcDayNumber } from './recovery-stats';
 
 const RECENT_ACTIVITY_LIMIT = 5;
@@ -34,18 +36,22 @@ export class DashboardService {
         setupComplete: false,
         profile: null,
         stats: null,
+        milestones: null,
         recentActivity: [],
       };
     }
 
+    const { stats, milestones } = await this.computeProgress(
+      userId,
+      user.recoveryStartDate,
+      user.dailySpendCents,
+    );
+
     return {
       setupComplete: true,
       profile: this.toProfile(user.recoveryStartDate, user.dailySpendCents),
-      stats: await this.computeStats(
-        userId,
-        user.recoveryStartDate,
-        user.dailySpendCents,
-      ),
+      stats,
+      milestones,
       recentActivity: await this.getRecentActivity(userId),
     };
   }
@@ -65,23 +71,27 @@ export class DashboardService {
     };
   }
 
-  // Streak semantics live in ./recovery-stats (shared with analytics).
-  // Money saved is days x daily spend minus relapse spend, never below zero.
-  private async computeStats(
+  // Streak semantics live in ./recovery-stats (shared with analytics), the
+  // milestone ladder in ./milestones. Money saved is days x daily spend minus
+  // relapse spend, never below zero. Both read the same relapse fetch.
+  private async computeProgress(
     userId: string,
     recoveryStartDate: Date,
     dailySpendCents: number,
-  ): Promise<DashboardStats> {
+  ): Promise<{ stats: DashboardStats; milestones: MilestonesSummary }> {
     const relapses = await this.relapsesService.findAllForStats(userId);
 
     const startDay = toUtcDayNumber(recoveryStartDate);
     const today = toUtcDayNumber(new Date());
     const recoveryDays = Math.max(0, today - startDay) + 1;
+    const relapseDays = relapses.map((relapse) =>
+      toUtcDayNumber(relapse.occurredAt),
+    );
 
     const { currentStreakDays, longestStreakDays } = computeStreaks(
       startDay,
       today,
-      relapses.map((relapse) => toUtcDayNumber(relapse.occurredAt)),
+      relapseDays,
     );
 
     const spentCents = relapses.reduce(
@@ -90,10 +100,21 @@ export class DashboardService {
     );
 
     return {
-      currentStreakDays,
-      longestStreakDays,
-      moneySavedCents: Math.max(0, recoveryDays * dailySpendCents - spentCents),
-      recoveryDays,
+      stats: {
+        currentStreakDays,
+        longestStreakDays,
+        moneySavedCents: Math.max(
+          0,
+          recoveryDays * dailySpendCents - spentCents,
+        ),
+        recoveryDays,
+      },
+      milestones: computeMilestones(
+        startDay,
+        today,
+        relapseDays,
+        currentStreakDays,
+      ),
     };
   }
 
