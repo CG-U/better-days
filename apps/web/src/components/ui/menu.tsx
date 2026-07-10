@@ -61,7 +61,7 @@ function MenuPopup({
 }
 
 const itemClasses =
-  "flex min-h-11 w-full cursor-default items-center gap-3 rounded-xl px-3 text-sm font-semibold outline-none select-none transition-colors duration-150 data-[highlighted]:bg-muted data-[highlighted]:text-foreground";
+  "flex min-h-11 w-full cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-semibold outline-none select-none transition-colors duration-150 data-[highlighted]:bg-muted data-[highlighted]:text-foreground";
 
 function MenuItem({
   className,

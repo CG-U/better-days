@@ -218,6 +218,18 @@
   html {
     @apply font-sans;
   }
+  /* Tailwind v4's preflight resets buttons to `cursor: default`. Restore the
+     pointer once, here, rather than hanging `cursor-pointer` on every control
+     and every future one. `[role]` covers the Base UI primitives, which render
+     divs and anchors. A disabled button keeps the default arrow — a pointer on
+     a control that will not respond is a lie about what a click will do. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="menuitem"]:not([aria-disabled="true"]),
+  [role="menuitemcheckbox"],
+  [role="tab"] {
+    cursor: pointer;
+  }
   h1,
   h2,
   h3,
