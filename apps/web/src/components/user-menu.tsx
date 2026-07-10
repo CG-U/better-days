@@ -1,6 +1,15 @@
 "use client";
 
-import { LogOut, Moon, Phone, Sun, UserRound, Wrench } from "lucide-react";
+import {
+  Bug,
+  LogOut,
+  MessageCircle,
+  Moon,
+  Phone,
+  Sun,
+  UserRound,
+  Wrench,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
@@ -101,6 +110,23 @@ export function UserMenu({ className }: { className?: string }) {
         </MenuLinkItem>
 
         <ThemeMenuItem />
+
+        <MenuSeparator />
+
+        {/* Both land on /support; the bug entry preselects its topic. Sitting
+            above the helpline, not below it — reaching a person about the app
+            and reaching a person about gambling are different needs, and the
+            second one should never be the item you scroll past a bug report
+            to find. */}
+        <MenuLinkItem render={<Link href="/support?topic=bug" />}>
+          <Bug aria-hidden className="size-4 text-muted-foreground" />
+          Report a bug
+        </MenuLinkItem>
+
+        <MenuLinkItem render={<Link href="/support" />}>
+          <MessageCircle aria-hidden className="size-4 text-muted-foreground" />
+          Contact the developer
+        </MenuLinkItem>
 
         <MenuSeparator />
 

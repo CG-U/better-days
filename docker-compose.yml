@@ -12,6 +12,11 @@ services:
       API_URL: http://api:4000
       # keep container build cache separate from host-side `next build` output
       NEXT_DIST_DIR: .next-container
+      # Web3Forms delivers the /support form straight from the browser. The
+      # access key names the destination inbox, not the sender, so it is public
+      # by design. Set WEB3FORMS_ACCESS_KEY in a root .env; without it the
+      # support form renders disabled rather than failing on submit.
+      NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY: ${WEB3FORMS_ACCESS_KEY:-}
     volumes:
       - .:/app
       # keep Linux node_modules out of the macOS bind mount

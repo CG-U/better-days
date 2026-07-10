@@ -10,6 +10,7 @@ const PROTECTED_PAGES = [
   "/analytics",
   "/settings",
   "/toolkit",
+  "/support",
 ];
 
 export function proxy(request: NextRequest) {
@@ -45,6 +46,7 @@ export const config = {
     "/analytics/:path*",
     "/settings/:path*",
     "/toolkit/:path*",
+    "/support/:path*",
     "/login",
     "/register",
   ],

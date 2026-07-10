@@ -22,7 +22,12 @@ const TABS = [
 
 // Reached from the account menu rather than a tab, but still app pages — the
 // nav stays visible so they are not dead ends.
-const NAV_PAGES = [...TABS.map((tab) => tab.href), "/settings", "/toolkit"];
+const NAV_PAGES = [
+  ...TABS.map((tab) => tab.href),
+  "/settings",
+  "/toolkit",
+  "/support",
+];
 
 /** The nav only shows on app pages, never on auth or dev pages. */
 function useNavVisible(): boolean {
