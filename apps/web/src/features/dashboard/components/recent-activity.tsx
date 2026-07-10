@@ -2,7 +2,7 @@ import type {
   RecentActivityItem,
   RecentActivityType,
 } from "@better-days/shared";
-import { HeartHandshake, NotebookPen, Sparkles, Zap } from "lucide-react";
+import { BookOpen, HeartHandshake, NotebookPen, Sparkles, Zap } from "lucide-react";
 import { SectionCard } from "@/components/section-card";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -27,6 +27,10 @@ const ACTIVITY_STYLES: Record<
   checkin: {
     icon: NotebookPen,
     className: "bg-secondary-container text-on-secondary-container",
+  },
+  journal: {
+    icon: BookOpen,
+    className: "bg-milestone-container/60 text-on-milestone-container",
   },
 };
 

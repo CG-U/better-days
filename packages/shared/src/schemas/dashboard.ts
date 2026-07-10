@@ -35,7 +35,7 @@ export interface DashboardStats {
   recoveryDays: number;
 }
 
-export type RecentActivityType = 'urge' | 'relapse' | 'checkin';
+export type RecentActivityType = 'urge' | 'relapse' | 'checkin' | 'journal';
 
 export interface RecentActivityItem {
   id: string;

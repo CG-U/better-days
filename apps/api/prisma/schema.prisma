@@ -31,12 +31,31 @@ model User {
   relapses          Relapse[]
   checkIns          CheckIn[]
   copingStrategies  CopingStrategy[]
+  journalEntries    JournalEntry[]
 
   @@map("users")
 }
 
+/// Free-form writing, owned entirely by the user. Unlike CheckIn there is no
+/// calendar day and no unique constraint: an entry belongs to the moment it was
+/// written, and you may write as many in a day as you need. Nothing aggregates
+/// it, nothing scores it, and its text never leaves this table.
+model JournalEntry {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  body String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, createdAt])
+  @@map("journal_entries")
+}
+
 /// Something the user knows helps them through a craving, in their own words.
-/// Surfaced on the ride-it-out screen; managed from /settings.
+/// Surfaced on the ride-it-out screen; managed from /toolkit.
 model CopingStrategy {
   id     String @id @default(uuid())
   userId String

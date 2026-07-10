@@ -8,6 +8,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { CheckInsModule } from './checkins/checkins.module';
 import { CopingModule } from './coping/coping.module';
+import { JournalModule } from './journal/journal.module';
 import { RelapsesModule } from './relapses/relapses.module';
 import { SettingsModule } from './settings/settings.module';
 import { UrgesModule } from './urges/urges.module';
@@ -26,6 +27,7 @@ import { UsersModule } from './users/users.module';
     AnalyticsModule,
     SettingsModule,
     CopingModule,
+    JournalModule,
   ],
   controllers: [AppController],
   providers: [AppService],

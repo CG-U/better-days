@@ -9,3 +9,4 @@ export * from './schemas/checkins';
 export * from './schemas/analytics';
 export * from './schemas/coping';
 export * from './schemas/milestones';
+export * from './schemas/journal';

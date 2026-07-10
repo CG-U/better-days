@@ -8,6 +8,7 @@ import type {
   RecoverySetupInput,
 } from '@better-days/shared';
 import { CheckInsService } from '../checkins/checkins.service';
+import { JournalService } from '../journal/journal.service';
 import { RelapsesService } from '../relapses/relapses.service';
 import { UrgesService } from '../urges/urges.service';
 import { UsersService } from '../users/users.service';
@@ -23,6 +24,7 @@ export class DashboardService {
     private readonly urgesService: UrgesService,
     private readonly relapsesService: RelapsesService,
     private readonly checkInsService: CheckInsService,
+    private readonly journalService: JournalService,
   ) {}
 
   async getDashboard(userId: string): Promise<DashboardResponse> {
@@ -121,10 +123,12 @@ export class DashboardService {
   private async getRecentActivity(
     userId: string,
   ): Promise<RecentActivityItem[]> {
-    const [urges, relapses, checkIns] = await Promise.all([
+    const [urges, relapses, checkIns, journalEntries] = await Promise.all([
       this.urgesService.findRecent(userId, RECENT_ACTIVITY_LIMIT),
       this.relapsesService.findRecent(userId, RECENT_ACTIVITY_LIMIT),
       this.checkInsService.findRecent(userId, RECENT_ACTIVITY_LIMIT),
+      // Timestamps only — see JournalService.findRecentTimestamps.
+      this.journalService.findRecentTimestamps(userId, RECENT_ACTIVITY_LIMIT),
     ]);
 
     const items: RecentActivityItem[] = [
@@ -148,6 +152,13 @@ export class DashboardService {
             ? 'Morning check-in completed'
             : 'Evening check-in completed',
         occurredAt: checkIn.createdAt,
+      })),
+      ...journalEntries.map((entry) => ({
+        id: entry.id,
+        type: 'journal' as const,
+        // Never an excerpt. The feed says an entry exists, nothing more.
+        label: 'Journal entry written',
+        occurredAt: entry.createdAt.toISOString(),
       })),
     ];
 
