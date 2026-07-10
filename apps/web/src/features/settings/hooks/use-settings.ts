@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AUTH_QUERY_KEY } from "@/features/auth/hooks/use-auth";
 import { settingsApi } from "../api";
@@ -35,6 +36,28 @@ export function useChangePassword() {
     onSuccess: () => {
       toast.success("Password changed", {
         description: "Use your new password next time you sign in.",
+      });
+    },
+  });
+}
+
+/**
+ * The API clears the session cookie, so the only work left here is discarding
+ * the cached copies of data that no longer exists. `replace`, not `push`: the
+ * back button must not return to a dashboard belonging to a deleted account.
+ */
+export function useDeleteAccount() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: settingsApi.deleteAccount,
+    onSuccess: () => {
+      queryClient.clear();
+      router.replace("/login");
+      // No "success" tone. Leaving is not a failure and not an achievement.
+      toast("Your account has been deleted.", {
+        description: "Everything you wrote is gone. Take good care of yourself.",
       });
     },
   });

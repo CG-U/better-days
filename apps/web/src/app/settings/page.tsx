@@ -6,6 +6,7 @@ import { QueryError } from "@/components/query-error";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLogout } from "@/features/auth/hooks/use-auth";
+import { DeleteAccountForm } from "@/features/settings/components/delete-account-form";
 import { PasswordForm } from "@/features/settings/components/password-form";
 import { ProfileForm } from "@/features/settings/components/profile-form";
 import { useProfile } from "@/features/settings/hooks/use-settings";
@@ -61,6 +62,9 @@ export default function SettingsPage() {
             <LogOut aria-hidden className="size-5" />
             {logout.isPending ? "Signing out..." : "Sign out"}
           </Button>
+
+          {/* Last on the page, after the ordinary way to leave. */}
+          <DeleteAccountForm />
         </>
       )}
     </main>

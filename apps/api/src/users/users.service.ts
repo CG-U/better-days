@@ -39,4 +39,14 @@ export class UsersService {
   updatePasswordHash(id: string, passwordHash: string): Promise<User> {
     return this.prisma.user.update({ where: { id }, data: { passwordHash } });
   }
+
+  /**
+   * Irreversible. Every user-owned table declares `onDelete: Cascade`, so this
+   * one statement removes the urges, relapses, check-ins, coping strategies,
+   * and journal entries too. Anything added later must keep that FK rule, or a
+   * deleted account will leave its most private rows behind.
+   */
+  async delete(id: string): Promise<void> {
+    await this.prisma.user.delete({ where: { id } });
+  }
 }

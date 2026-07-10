@@ -34,8 +34,18 @@ export const ChangePasswordSchema = z
     path: ['newPassword'],
   });
 
+/**
+ * Deleting an account is irreversible and cascades to every table. The password
+ * is the proof of identity — a session cookie alone is not enough, because an
+ * unlocked phone left on a table is exactly how this gets triggered by accident.
+ */
+export const DeleteAccountSchema = z.object({
+  password: z.string().min(1, 'Enter your password to confirm'),
+});
+
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;
 export type ChangePasswordInput = z.infer<typeof ChangePasswordSchema>;
+export type DeleteAccountInput = z.infer<typeof DeleteAccountSchema>;
 
 export interface UserProfile {
   id: string;

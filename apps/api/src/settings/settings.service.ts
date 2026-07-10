@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import type {
   ChangePasswordInput,
+  DeleteAccountInput,
   UpdateProfileInput,
   UserProfile,
 } from '@better-days/shared';
@@ -63,6 +64,28 @@ export class SettingsService {
       userId,
       await hashPassword(input.newPassword),
     );
+  }
+
+  /**
+   * Verifies the password, then deletes the user — cascading to every table
+   * they own. There is no soft delete and no grace period: someone who asks
+   * this app to forget them should be able to trust that it did.
+   */
+  async deleteAccount(
+    userId: string,
+    input: DeleteAccountInput,
+  ): Promise<void> {
+    const user = await this.usersService.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const matches = await verifyPassword(input.password, user.passwordHash);
+    if (!matches) {
+      throw new UnauthorizedException('That password is incorrect');
+    }
+
+    await this.usersService.delete(userId);
   }
 
   private toProfile(user: User): UserProfile {

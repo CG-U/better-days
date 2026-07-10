@@ -1,5 +1,6 @@
 import type {
   ChangePasswordInput,
+  DeleteAccountInput,
   ProfileResponse,
   UpdateProfileInput,
 } from "@better-days/shared";
@@ -11,4 +12,6 @@ export const settingsApi = {
     apiClient.put<ProfileResponse>("/settings/profile", input),
   changePassword: (input: ChangePasswordInput) =>
     apiClient.put<void>("/settings/password", input),
+  deleteAccount: (input: DeleteAccountInput) =>
+    apiClient.delete<void>("/settings/account", input),
 };
