@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -17,6 +18,14 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    /**
+     * Registered globally so the throttler's storage exists app-wide, but no
+     * global `APP_GUARD` is bound: only the credential routes opt in, via
+     * `AuthThrottlerGuard`. Storage is in-memory, so the limits are per
+     * process — correct on a single Render instance, and something to revisit
+     * (Redis storage) the day this scales horizontally.
+     */
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }]),
     PrismaModule,
     UsersModule,
     AuthModule,

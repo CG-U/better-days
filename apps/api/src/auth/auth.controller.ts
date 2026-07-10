@@ -15,8 +15,14 @@ import type {
   LoginInput,
   RegisterInput,
 } from '@better-days/shared';
+import { Throttle } from '@nestjs/throttler';
 import type { Response } from 'express';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import { AuthThrottlerGuard } from '../common/throttler/auth-throttler.guard';
+import {
+  LOGIN_THROTTLE,
+  REGISTER_THROTTLE,
+} from '../common/throttler/throttle-limits';
 import { clearAuthCookie, setAuthCookie } from './auth-cookie';
 import type { JwtPayload } from './auth.constants';
 import { AuthService } from './auth.service';
@@ -31,6 +37,8 @@ export class AuthController {
   ) {}
 
   @Post('register')
+  @UseGuards(AuthThrottlerGuard)
+  @Throttle(REGISTER_THROTTLE)
   async register(
     @Body(new ZodValidationPipe(RegisterSchema)) input: RegisterInput,
     @Res({ passthrough: true }) response: Response,
@@ -42,6 +50,8 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthThrottlerGuard)
+  @Throttle(LOGIN_THROTTLE)
   async login(
     @Body(new ZodValidationPipe(LoginSchema)) input: LoginInput,
     @Res({ passthrough: true }) response: Response,
