@@ -9,8 +9,8 @@ import { KeyRound } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { FormError } from "@/components/form-error";
 import { SectionCard } from "@/components/section-card";
+import { PasswordInput } from "@/components/password-input";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useChangePassword } from "../hooks/use-settings";
 
@@ -42,9 +42,8 @@ export function PasswordForm() {
 
         <div className="space-y-3">
           <Label htmlFor="currentPassword">Current password</Label>
-          <Input
+          <PasswordInput
             id="currentPassword"
-            type="password"
             autoComplete="current-password"
             aria-invalid={!!errors.currentPassword}
             {...register("currentPassword")}
@@ -54,9 +53,8 @@ export function PasswordForm() {
 
         <div className="space-y-3">
           <Label htmlFor="newPassword">New password</Label>
-          <Input
+          <PasswordInput
             id="newPassword"
-            type="password"
             autoComplete="new-password"
             aria-invalid={!!errors.newPassword}
             {...register("newPassword")}

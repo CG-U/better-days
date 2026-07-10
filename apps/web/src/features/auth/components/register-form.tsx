@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRegister } from "../hooks/use-auth";
 import { FormError } from "@/components/form-error";
+import { PasswordInput } from "@/components/password-input";
 
 export function RegisterForm() {
   const registerUser = useRegister();
@@ -53,9 +54,8 @@ export function RegisterForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               autoComplete="new-password"
               placeholder="At least 8 characters"
               aria-invalid={!!errors.password}

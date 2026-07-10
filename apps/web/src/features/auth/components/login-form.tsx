@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLogin } from "../hooks/use-auth";
 import { FormError } from "@/components/form-error";
+import { PasswordInput } from "@/components/password-input";
 
 export function LoginForm() {
   const login = useLogin();
@@ -53,9 +54,8 @@ export function LoginForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               autoComplete="current-password"
               aria-invalid={!!errors.password}
               {...register("password")}

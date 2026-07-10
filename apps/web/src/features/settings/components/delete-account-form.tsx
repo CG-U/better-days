@@ -9,8 +9,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormError } from "@/components/form-error";
 import { SectionCard } from "@/components/section-card";
+import { PasswordInput } from "@/components/password-input";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDeleteAccount } from "../hooks/use-settings";
 
@@ -72,9 +72,8 @@ export function DeleteAccountForm() {
             <Label htmlFor="deletePassword">
               Enter your password to confirm
             </Label>
-            <Input
+            <PasswordInput
               id="deletePassword"
-              type="password"
               autoComplete="current-password"
               aria-invalid={!!errors.password}
               {...register("password")}
