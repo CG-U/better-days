@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Atkinson_Hyperlegible_Next, Manrope } from "next/font/google";
 import "./globals.css";
 import { AppNav, AppNavSpacer } from "@/components/app-nav";
+import { SlowRequestIndicator } from "@/components/slow-request-indicator";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "./providers";
 
@@ -39,6 +40,7 @@ export default function RootLayout({
           <AppNav />
           {children}
           <AppNavSpacer />
+          <SlowRequestIndicator />
           <Toaster />
         </Providers>
       </body>
